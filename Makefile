@@ -17,7 +17,7 @@ DOXYGEN := doxygen
 CXXFLAGS := -fPIC -Wall -std=c++11
 LIBS := 
 INCLUDES := -I./inc/
-SRCS := ./src/ShellBase.cpp
+SRCS := ./src/Shell.cpp
 
 OBJS := $(SRCS:%.cpp=%.o)
 		
