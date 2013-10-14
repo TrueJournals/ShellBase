@@ -45,6 +45,7 @@ void Shell::run()
 
 		std::string cmd_part;
 		std::vector<std::string> cmd_parts;
+		// TODO: Arguments with quotes
 		while(cmd_stream >> cmd_part)
 		{
 			cmd_parts.push_back(cmd_part);
@@ -68,11 +69,16 @@ void Shell::run()
 		bool foundCmd = false;
 		for(auto cmd : _shell.getCmdList())
 		{
-			if(cmd.command == cmd_parts.at(0) ||
-					cmd_parts.at(0) == cmd.shortCmd)
+			if(cmd->getCmdName() == cmd_parts.at(0) ||
+					cmd_parts.at(0) == cmd->getShortCmd())
 			{
-				result = cmd.call->run(cmd_parts);
 				foundCmd = true;
+				if(cmd_parts.size() < cmd->numReqArgs()+1)
+				{
+					std::cout << "ERROR: Not enough arguments for " << cmd->getCmdName() << std::endl;
+					break;
+				}
+				result = cmd->run(cmd_parts);
 				break;
 			}
 		}
@@ -95,7 +101,7 @@ int Shell::listAllCommands()
 	int count = 0;
 	for(auto cmd : _shell.getCmdList())
 	{
-		std::cout << std::setw(20) << cmd.command;
+		std::cout << std::setw(20) << cmd->getCmdName();
 		if(++count > 5) std::cout << std::endl;
 	}
 	std::cout << std::endl;
@@ -106,9 +112,20 @@ int Shell::commandHelp(std::string &cmd)
 {
 	for(auto c : _shell.getCmdList())
 	{
-		if(c.command == cmd || c.shortCmd == cmd)
+		if(c->getCmdName() == cmd || c->getShortCmd() == cmd)
 		{
-			std::cout << c.help << std::endl;
+			if(c->getShortCmd().empty() == false)
+				std::cout << "(" << c->getShortCmd() << ") ";
+			std::cout << c->getCmdName() << " ";
+			for(auto a : c->getArgList())
+			{
+				if(a.second == false) std::cout << "[";
+				std::cout << a.first;
+				if(a.second == false) std::cout << "]";
+				std::cout << " ";
+			}
+			std::cout << std::endl;
+			std::cout << c->getHelp() << std::endl;
 			return 0;
 		}
 	}
