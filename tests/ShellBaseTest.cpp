@@ -2,21 +2,27 @@
 #include <IShell.h>
 
 #include <iostream>
+#include <string>
+#include <sstream>
 
 class DemoShell : public IShell
 {
 protected:
 	class doTest : public ShellAction
 	{
+	private:
+		DemoShell *shell;
 	protected:
 		const argList args = { {"test", true} };
 		const std::string cmdName = "doTest";
 		const std::string shortCmd = "dt";
 	public:
+		doTest(DemoShell *outer) : ShellAction(outer), shell(outer) { }
 		virtual ~doTest() { }
 		virtual int run(std::vector<std::string> &args)
 		{
 			std::cout << "Just a test" << std::endl;
+			std::cout << "Number: " << shell->number << std::endl;
 			return 0;
 		}
 		virtual std::string getHelp()
@@ -29,14 +35,21 @@ protected:
 	};
 	class doOther : public ShellAction
 	{
+	private:
+		DemoShell *shell;
 	protected:
 		const argList args = { {"one", true}, {"two", false} };
 		const std::string cmdName = "doOther";
 		const std::string shortCmd = "do";
 	public:
+		doOther(DemoShell *outer) : ShellAction(outer), shell(outer) { }
 		virtual ~doOther() { }
 		virtual int run(std::vector<std::string> &args)
 		{
+			std::stringstream ss;
+			ss << args[1];
+			ss >> shell->number;
+
 			std::cout << "Another function" << std::endl;
 			return 0;
 		}
@@ -53,6 +66,7 @@ protected:
 	doOther cmd_other;
 
 public:
+	DemoShell() : cmd_test(this), cmd_other(this), number(5) { }
 	virtual std::vector<ShellAction*> getCmdList()
 	{
 		std::vector<ShellAction*> cmd_list;
@@ -61,6 +75,7 @@ public:
 		return cmd_list;
 	}
 	virtual ~DemoShell() { }
+	int number;
 };
 
 int main(int argc, char *argv[])
