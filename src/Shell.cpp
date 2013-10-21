@@ -79,7 +79,8 @@ void Shell::run()
 					std::cout << "ERROR: Not enough arguments for " << cmd->getCmdName() << std::endl;
 					break;
 				}
-				result = cmd->run(cmd_parts);
+				cmd->setArgs(cmd_parts);
+				result = cmd->run();
 				break;
 			}
 		}

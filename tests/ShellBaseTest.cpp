@@ -20,7 +20,7 @@ protected:
 	public:
 		doTest(DemoShell *outer) : IShellAction(outer), shell(outer) { }
 		virtual ~doTest() { }
-		virtual int run(std::vector<std::string> &args)
+		virtual int run()
 		{
 			std::cout << "Just a test" << std::endl;
 			std::cout << "Number: " << shell->number << std::endl;
@@ -39,16 +39,16 @@ protected:
 	private:
 		DemoShell *shell;
 	protected:
-		const argList args = { {"one", true}, {"two", false} };
+		const argList args = { {"one", true}, {"two", true} };
 		const std::string cmdName = "doOther";
 		const std::string shortCmd = "do";
 	public:
 		doOther(DemoShell *outer) : IShellAction(outer), shell(outer) { }
 		virtual ~doOther() { }
-		virtual int run(std::vector<std::string> &args)
+		virtual int run()
 		{
 			std::stringstream ss;
-			ss << args[1];
+			ss << this->getArg("one");
 			ss >> shell->number;
 
 			std::cout << "Another function" << std::endl;
