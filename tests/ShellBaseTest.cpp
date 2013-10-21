@@ -1,5 +1,6 @@
 #include <Shell.h>
 #include <IShell.h>
+#include <IShellAction.h>
 
 #include <iostream>
 #include <string>
@@ -8,7 +9,7 @@
 class DemoShell : public IShell
 {
 protected:
-	class doTest : public ShellAction
+	class doTest : public IShellAction
 	{
 	private:
 		DemoShell *shell;
@@ -17,7 +18,7 @@ protected:
 		const std::string cmdName = "doTest";
 		const std::string shortCmd = "dt";
 	public:
-		doTest(DemoShell *outer) : ShellAction(outer), shell(outer) { }
+		doTest(DemoShell *outer) : IShellAction(outer), shell(outer) { }
 		virtual ~doTest() { }
 		virtual int run(std::vector<std::string> &args)
 		{
@@ -33,7 +34,7 @@ protected:
 		virtual std::string getCmdName() { return cmdName; }
 		virtual std::string getShortCmd() { return shortCmd; }
 	};
-	class doOther : public ShellAction
+	class doOther : public IShellAction
 	{
 	private:
 		DemoShell *shell;
@@ -42,7 +43,7 @@ protected:
 		const std::string cmdName = "doOther";
 		const std::string shortCmd = "do";
 	public:
-		doOther(DemoShell *outer) : ShellAction(outer), shell(outer) { }
+		doOther(DemoShell *outer) : IShellAction(outer), shell(outer) { }
 		virtual ~doOther() { }
 		virtual int run(std::vector<std::string> &args)
 		{
@@ -67,9 +68,9 @@ protected:
 
 public:
 	DemoShell() : cmd_test(this), cmd_other(this), number(5) { }
-	virtual std::vector<ShellAction*> getCmdList()
+	virtual std::vector<IShellAction*> getCmdList()
 	{
-		std::vector<ShellAction*> cmd_list;
+		std::vector<IShellAction*> cmd_list;
 		cmd_list.push_back(&cmd_test);
 		cmd_list.push_back(&cmd_other);
 		return cmd_list;

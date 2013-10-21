@@ -15,6 +15,7 @@ extern "C" {
 
 #include <Shell.h>
 #include <IShell.h>
+#include <IShellAction.h>
  
 Shell::Shell(IShell &shell, std::string prompt) : _shell(shell), _prompt(prompt),
 		_exitWords({"exit", "quit"})
